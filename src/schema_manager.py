@@ -1,5 +1,6 @@
 import pandas as pd
 import sqlite3
+import csv_reader
 
 # This file is responsible for managing the database schema,
 # Responsibilities:
@@ -8,10 +9,35 @@ import sqlite3
 # Compare schemas to determine compatibility (append vs create)
 # Provide schema information to other components (e.g., Query Service, LLM)
 
-#Function that dictates whether data from pandas table is similar
-#to existing data.
+#Function that dictates whether data from pandas table headers is similar
+#to existing data. 
+# Returns table name, or None.
+def find_similar_table(pandas_headers):
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+
+    for table in tables:
+        #get the headers
+        table_name = table[0]
+        cursor.execute(f"PRAGMA table_info({table_name});")
+        table_info = cursor.fetchall()
+        table_headers = [info[1] for info in table_info]
+
+        matching_headers = set(pandas_headers) & set(table_headers)
+        non_matching_headers = set(pandas_headers) - set(table_headers)
+
+        if len(matching_headers) > len(non_matching_headers):
+            print(f"DEBUG Table '{table_name}' is similar enough to the CSV file.")
+            return table_name, non_matching_headers
+    
+    print("DEBUG No similar tables found. A new table will be created.")
+    return None, None
 
 #Function that retrieves all tables and provides their schema in a readable way.
 #Schemas will be provided as [table_name, [columns], [types]]
 
-#
+
