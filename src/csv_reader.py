@@ -8,6 +8,17 @@ def load_csv(file_path):
         data = pd.read_csv(file_path)
 
         data_name = file_path[:-4]
+
+        
+        #For goodness of data, drop all columns with the same first column.
+        first_col = data.columns[0]
+        data_duplicates = data[data.duplicated(subset=[first_col], keep='first')]
+        clean_data = data.drop_duplicates(subset=[first_col], keep='first')
+        
+        if len(data_duplicates > 0):
+            print("Dropping following data due to having the same id as another.\nFirst columns (NOT id) must be unique.")
+            print(data_duplicates)
+        
         #Query the SQL Database for tables
         #Check if any tables are similar enough to the CSV file
         #If there are more matching headers than non-matching headers, then we can assume that the CSV file is similar enough to the table to be inserted into the table
@@ -36,11 +47,24 @@ def load_csv(file_path):
                 print(updateQuery)
                 conn.execute(updateQuery)
             
+            before = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
             #Updating Values
             placeholders_list = f'{', '.join(['?' for _ in data.columns])}'
             col_names = f'({', '.join([col for col in data.columns])})'
-            query = f"INSERT INTO {table_name}  {col_names} VALUES ({placeholders_list})"
-            conn.executemany(query, data.values.tolist())
+            query = f"""
+            INSERT INTO {table_name}  {col_names} 
+            VALUES ({placeholders_list})
+            ON CONFLICT({data.columns[0]})
+            DO UPDATE SET {', '.join([f"{col}=excluded.{col}" for col in data.columns])}
+            """
+            conn.executemany(query, clean_data.values.tolist())
+            after = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+            
+            #To inform users
+            added = after - before
+            updated = len(clean_data) - added
+            print(f"Added {added} new entries. \nUpdated {updated} existing entries.")
+
             conn.commit()
             conn.close()
         
@@ -48,9 +72,14 @@ def load_csv(file_path):
         else:
             #makes col query with name, type.
             cols = []
+            use_as_key = True
             for col in data.columns:
                 col_type = pandas_to_type(data[col].dtype)
-                cols.append(f"{col} {col_type}")
+                if(use_as_key):
+                    cols.append(f"{col} {col_type} UNIQUE")
+                    use_as_key = False
+                else:
+                    cols.append(f"{col} {col_type}")
             col_schema = f"{', '.join(cols)}"
 
             #creates table query with added id autoincrement for tracking.
@@ -62,17 +91,16 @@ def load_csv(file_path):
             """
             conn.execute(create_query)
 
-
             #inserting initial values query
             placeholders_list = f'{', '.join(['?' for _ in data.columns])}'
             col_names = f'({', '.join([col for col in data.columns])})'
-            insert_query = f"INSERT INTO {data_name} {col_names} VALUES ({placeholders_list})"
+            insert_query = f"INSERT OR IGNORE INTO {data_name} {col_names} VALUES ({placeholders_list})"
 
-            conn.executemany(insert_query, data.values.tolist())
+            conn.executemany(insert_query, clean_data.values.tolist())
 
             conn.commit()
             conn.close()
-
+    
         return 200
     
     except Exception as e:
