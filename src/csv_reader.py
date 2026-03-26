@@ -49,8 +49,8 @@ def load_csv(file_path):
             
             before = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
             #Updating Values
-            placeholders_list = f'{', '.join(['?' for _ in data.columns])}'
-            col_names = f'({', '.join([col for col in data.columns])})'
+            placeholders_list = f'{",".join(["?" for _ in data.columns])}'
+            col_names = f'({", ".join([col for col in data.columns])})'
             query = f"""
             INSERT INTO {table_name}  {col_names} 
             VALUES ({placeholders_list})
@@ -92,8 +92,8 @@ def load_csv(file_path):
             conn.execute(create_query)
 
             #inserting initial values query
-            placeholders_list = f'{', '.join(['?' for _ in data.columns])}'
-            col_names = f'({', '.join([col for col in data.columns])})'
+            placeholders_list = f'{", ".join(["?" for _ in data.columns])}'
+            col_names = f'({", ".join([col for col in data.columns])})'
             insert_query = f"INSERT OR IGNORE INTO {data_name} {col_names} VALUES ({placeholders_list})"
 
             conn.executemany(insert_query, clean_data.values.tolist())
