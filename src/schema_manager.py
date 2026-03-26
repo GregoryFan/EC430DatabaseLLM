@@ -1,6 +1,5 @@
 import pandas as pd
 import sqlite3
-import csv_reader
 
 # This file is responsible for managing the database schema,
 # Responsibilities:
@@ -40,4 +39,24 @@ def find_similar_table(pandas_headers):
 #Function that retrieves all tables and provides their schema in a readable way.
 #Schemas will be provided as [table_name, [columns], [types]]
 
+def get_tables():
+    #Connect to database
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    #Get all tables
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+
+    #just get all the info
+    table_schemas = []
+    for table in tables:
+        table_name = table[0]
+        cursor.execute(f"PRAGMA table_info({table_name});")
+        table_info = cursor.fetchall()
+        columns = [info[1] for info in table_info]
+        types = [info[2] for info in table_info]
+        table_schemas.append((table_name, columns, types))
+
+    return table_schemas
 

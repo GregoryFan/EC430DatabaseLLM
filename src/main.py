@@ -1,3 +1,5 @@
+import sql_verifier
+
 #Main Code
 
 #General Process:
@@ -6,7 +8,15 @@
 #Attempt to execute SQL commands on the database
 #Return results to the user
 
-import sqlite3
-
 if __name__ == "__main__":
+    while(True):
+        #Get user input.
+        user_input = input("Type input: ")
+        #break clause
+        if user_input.lower() == "quit":
+            print("Exiting program.")
+            break
+
+        #debug
+        print(sql_verifier.validate_query(user_input))
     pass
