@@ -1,4 +1,6 @@
 import sql_verifier
+import query_service
+import csv_reader
 
 #Main Code
 
@@ -9,14 +11,28 @@ import sql_verifier
 #Return results to the user
 
 if __name__ == "__main__":
+    print("Type 'quit' to exit.")
+    print("To input data, use the syntax: 'insert [path_name]'")
+    print("To query data, use the syntax: 'query [query]'")
+
     while(True):
-        #Get user input.
-        user_input = input("Type input: ")
-        #break clause
+        user_input = input("Enter your command: ")
         if user_input.lower() == "quit":
-            print("Exiting program.")
+            print("Exiting the program.")
             break
 
-        #debug
-        print(sql_verifier.validate_query(user_input))
-    pass
+        elif user_input.lower().startswith("insert "):
+            file_path = user_input[7:].strip()
+            status = csv_reader.load_csv(file_path)
+            if status == 200:
+                print("CSV file loaded successfully.")
+            else:
+                print("Failed to load CSV file.")
+
+        elif user_input.lower().startswith("query "):
+            query = user_input[6:].strip()
+            if sql_verifier.validate_query(query):
+                #Run the query and return results
+                results = query_service.execute_command(query)
+                print(results)
+        

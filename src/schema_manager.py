@@ -31,9 +31,11 @@ def find_similar_table(pandas_headers):
 
         if len(matching_headers) > len(non_matching_headers):
             print(f"DEBUG Table '{table_name}' is similar enough to the CSV file.")
+            conn.close()
             return table_name, non_matching_headers
     
     print("DEBUG No similar tables found. A new table will be created.")
+    conn.close()
     return None, None
 
 #Function that retrieves all tables and provides their schema in a readable way.
@@ -58,5 +60,6 @@ def get_tables():
         types = [info[2] for info in table_info]
         table_schemas.append((table_name, columns, types))
 
+    conn.close()
     return table_schemas
 
