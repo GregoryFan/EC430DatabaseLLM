@@ -30,11 +30,11 @@ def find_similar_table(pandas_headers):
         non_matching_headers = set(pandas_headers) - set(table_headers)
 
         if len(matching_headers) > len(non_matching_headers):
-            print(f"DEBUG Table '{table_name}' is similar enough to the CSV file.")
+            print(f"Table '{table_name}' is similar enough to the CSV file. Information will be updated there.")
             conn.close()
             return table_name, non_matching_headers
     
-    print("DEBUG No similar tables found. A new table will be created.")
+    print("No similar tables found. A new table will be created.")
     conn.close()
     return None, None
 

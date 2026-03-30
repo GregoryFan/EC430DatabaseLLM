@@ -1,6 +1,7 @@
-import sql_verifier
 import query_service
 import csv_reader
+from dotenv import load_dotenv
+import os
 
 #Main Code
 
@@ -9,6 +10,11 @@ import csv_reader
 #Use LLM to parse input into SQL commands
 #Attempt to execute SQL commands on the database
 #Return results to the user
+
+#Configuration
+load_dotenv()
+DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
+print("Debug is on.\n")
 
 if __name__ == "__main__":
     print("Type 'quit' to exit.")
@@ -32,8 +38,11 @@ if __name__ == "__main__":
 
         elif user_input.lower().startswith("query "):
             query = user_input[6:].strip()
-            if sql_verifier.validate_query(query):
-                #Run the query and return results
-                results = query_service.execute_command(query)
-                print(results)
+            #Run the query and return results
+            results = query_service.execute_command(query)
+            #may be better in the future to have pretty print
+            print(results)
+        
+        else:
+            print("Not a recognized command.")
         
