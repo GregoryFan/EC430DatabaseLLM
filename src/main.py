@@ -16,7 +16,8 @@ if __name__ == "__main__":
     print("To query data, use the syntax: 'query [query]'")
 
     while(True):
-        user_input = input("Enter your command: ")
+        user_input = input("\nEnter your command: ")
+        print() #newline for prettiness
         if user_input.lower() == "quit":
             print("Exiting the program.")
             break

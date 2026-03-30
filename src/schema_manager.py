@@ -47,7 +47,7 @@ def get_tables():
     cursor = conn.cursor()
 
     #Get all tables
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
     tables = cursor.fetchall()
 
     #just get all the info
