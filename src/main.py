@@ -12,9 +12,10 @@ import os
 #Return results to the user
 
 #Configuration
-load_dotenv()
+load_dotenv("CONFIG_FILE")
 DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
-print("Debug is on.\n")
+if DEBUG:
+    print("Debug is on.\n")
 
 if __name__ == "__main__":
     print("Type 'quit' to exit.")
