@@ -37,7 +37,7 @@ def test_normal_insertioin():
 @pytest.mark.order(2)
 def test_duplicate_key_insertion():
     conn = sqlite3.connect("TESTDB.db")
-    status = csv_reader.load_csv("tests/students.csv", "TESTDB.db")
+    status = csv_reader.load_csv("students.csv", "TESTDB.db")
 
     #Make sure if it returned just fine.
     assert status == 200
@@ -60,7 +60,7 @@ def test_duplicate_key_insertion():
 @pytest.mark.order(3)
 def test_new_column_insertion():
     conn = sqlite3.connect("TESTDB.db")
-    status = csv_reader.load_csv("tests/students2.csv", "TESTDB.db")
+    status = csv_reader.load_csv("students2.csv", "TESTDB.db")
 
     #Make sure if it returned just fine.
     assert status == 200
@@ -87,7 +87,7 @@ def test_new_column_insertion():
 @pytest.mark.order(4)
 def test_new_table_insertion():
     conn = sqlite3.connect("TESTDB.db")
-    status = csv_reader.load_csv("tests/food.csv", "TESTDB.db")
+    status = csv_reader.load_csv("food.csv", "TESTDB.db")
 
     #Make sure if it returned just fine.
     assert status == 200
