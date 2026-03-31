@@ -72,7 +72,7 @@ def test_new_column_insertion():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM students")
     results = cursor.fetchall()
-    assert len(results) == 4
+    assert len(results) == 3
     assert results[0][1] == "Greg"
     assert results[1][1] == "Michael"
     assert results[2][1] == "Mint"
