@@ -6,7 +6,6 @@ import os
 load_dotenv("CONFIG_FILE")
 load_dotenv(".env")
 DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
-client = OpenAI()
 
 def build_schema_string(schema):
     #Get a string ready for stringifying the table schemas.
@@ -42,6 +41,7 @@ def build_previous_attempts_string(previous_attempts):
     
 #Generates query from user input.
 def generate_query(user_input, previous_attempts):
+    client = OpenAI()
     schema = schema_manager.get_tables()
     schema_string = build_schema_string(schema)
     previous_string = build_previous_attempts_string(previous_attempts)
@@ -77,6 +77,7 @@ def generate_query(user_input, previous_attempts):
     return response.output_text
 
 def results_to_text(user_input, query, results):
+    client = OpenAI()
     prompt = f"""
     You are an AI tasked with managing a database. A version of you has already taken in a user input, ran it through the database, and found an acceptable result.
     Your job now is to present the data in a user readable way. Do not go overboard with explaining the data, just present it in a neat and organized manner.
