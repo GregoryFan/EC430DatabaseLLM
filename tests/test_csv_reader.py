@@ -20,8 +20,10 @@ def test_normal_insertioin():
     assert status == 200
 
     #Then, go actually check the data.
-    conn.execute("SELECT * FROM students")
-    results = conn.cursor.fetchall()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students")
+    results = cursor.fetchall()
+
     assert len(results) == 3
     assert results[0][1] == "Greg"
     assert results[1][1] == "Michael"
@@ -43,8 +45,9 @@ def test_duplicate_key_insertion():
     assert status == 200
 
     #Then, go actually check the data. Should be the same as before, since duplicate key ids should be dropped.
-    conn.execute("SELECT * FROM students")
-    results = conn.cursor.fetchall()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students")
+    results = cursor.fetchall()
     assert len(results) == 3
     assert results[0][1] == "Greg"
     assert results[1][1] == "Michael"
@@ -66,8 +69,9 @@ def test_new_column_insertion():
     assert status == 200
 
     #Then, go actually check the data. Should be the same as before, but with an extra column of data.
+    cursor = conn.cursor()
     conn.execute("SELECT * FROM students")
-    results = conn.cursor.fetchall()
+    results = cursor.fetchall()
     assert len(results) == 3
     assert results[0][1] == "Greg"
     assert results[1][1] == "Michael"
@@ -93,8 +97,9 @@ def test_new_table_insertion():
     assert status == 200
 
     #Then, go actually check the data. Should be the same as before, but with an extra column of data.
-    conn.execute("SELECT * FROM food")
-    results = conn.cursor.fetchall()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM food")
+    results = cursor.fetchall()
 
     #Data presence tested before. Just see if the table is there.
     assert len(results) == 3
