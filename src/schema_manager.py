@@ -17,7 +17,7 @@ import os
 load_dotenv("CONFIG_FILE")
 DB_PATH = os.getenv("DB_PATH", "database.db").strip().lower()
 
-def find_similar_table(pandas_headers):
+def find_similar_table(pandas_headers, DB_PATH=DB_PATH):
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -47,7 +47,7 @@ def find_similar_table(pandas_headers):
 #Function that retrieves all tables and provides their schema in a readable way.
 #Schemas will be provided as [table_name, [columns], [types]]
 
-def get_tables():
+def get_tables(DB_PATH=DB_PATH):
     #Connect to database
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -69,7 +69,7 @@ def get_tables():
     conn.close()
     return table_schemas
 
-def run_user_query(query):
+def run_user_query(query, DB_PATH=DB_PATH):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     try:

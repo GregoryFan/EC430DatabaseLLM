@@ -29,7 +29,7 @@ def load_csv(file_path, DB_PATH=DB_PATH):
         #If there are more matching headers than non-matching headers, then we can assume that the CSV file is similar enough to the table to be inserted into the table
         #If there are no tables that are similar enough, then we can create a new table
 
-        table_name, new_cols = schema_manager.find_similar_table(data.columns)
+        table_name, new_cols = schema_manager.find_similar_table(data.columns, DB_PATH=DB_PATH)
 
         conn = sqlite3.connect(DB_PATH)
 
