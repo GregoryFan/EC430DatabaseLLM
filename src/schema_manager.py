@@ -63,3 +63,15 @@ def get_tables():
     conn.close()
     return table_schemas
 
+def run_user_query(query):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    try:
+        cursor.execute(query)
+        results = cursor.fetchall()
+        conn.commit()
+        return results, None
+    except Exception as e:
+        return None, str(e)
+    finally:
+        conn.close()

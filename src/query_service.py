@@ -1,6 +1,6 @@
 import llm_interface
 import sql_verifier
-import sqlite3
+import schema_manager
 import os
 from dotenv import load_dotenv
 import re
@@ -29,7 +29,7 @@ def execute_command(user_input):
             continue
         
         #Run the query and return results
-        results, error = run_query(query)
+        results, error = schema_manager.run_user_query(query)
 
         if error:
             attempt = [query, f"Error on execution: {error}"]
@@ -56,15 +56,3 @@ def execute_command(user_input):
     
     return "Exceeded the number of attempt. Please rephrase the query."
 
-def run_query(query):
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query)
-        results = cursor.fetchall()
-        conn.commit()
-        return results, None
-    except Exception as e:
-        return None, str(e)
-    finally:
-        conn.close()
