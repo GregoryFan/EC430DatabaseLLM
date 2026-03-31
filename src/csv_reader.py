@@ -2,6 +2,11 @@ import pandas as pd
 import sqlite3 
 import schema_manager
 from sys import argv
+from dotenv import load_dotenv
+import os
+
+load_dotenv("CONFIG_FILE")
+DB_PATH = os.getenv("DB_PATH", "database.db").strip().lower()
 
 def load_csv(file_path):
     try:
@@ -26,7 +31,7 @@ def load_csv(file_path):
 
         table_name, new_cols = schema_manager.find_similar_table(data.columns)
 
-        conn = sqlite3.connect("database.db")
+        conn = sqlite3.connect(DB_PATH)
 
         #Updating Table Logic
         if table_name != None:

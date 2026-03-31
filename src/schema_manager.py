@@ -1,5 +1,7 @@
 import pandas as pd
 import sqlite3
+from dotenv import load_dotenv
+import os
 
 # This file is responsible for managing the database schema,
 # Responsibilities:
@@ -11,9 +13,13 @@ import sqlite3
 #Function that dictates whether data from pandas table headers is similar
 #to existing data. 
 # Returns table name, or None.
+
+load_dotenv("CONFIG_FILE")
+DB_PATH = os.getenv("DB_PATH", "database.db").strip().lower()
+
 def find_similar_table(pandas_headers):
 
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -43,7 +49,7 @@ def find_similar_table(pandas_headers):
 
 def get_tables():
     #Connect to database
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     #Get all tables
@@ -64,7 +70,7 @@ def get_tables():
     return table_schemas
 
 def run_user_query(query):
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     try:
         cursor.execute(query)
