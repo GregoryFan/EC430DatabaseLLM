@@ -2,10 +2,6 @@ import sqlite3
 import csv_reader
 import pytest
 
-def test_sample():
-    return True
-
-
 #Cases to test:
 #1. Normal data insertion.
 #2. Data insertion with duplicate key ids.
