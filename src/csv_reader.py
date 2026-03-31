@@ -8,7 +8,7 @@ import os
 load_dotenv("CONFIG_FILE")
 DB_PATH = os.getenv("DB_PATH", "database.db").strip().lower()
 
-def load_csv(file_path):
+def load_csv(file_path, DB_PATH=DB_PATH):
     try:
         data = pd.read_csv(file_path)
 
