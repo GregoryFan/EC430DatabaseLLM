@@ -70,9 +70,9 @@ def test_new_column_insertion():
 
     #Then, go actually check the data. Should be the same as before, but with an extra column of data.
     cursor = conn.cursor()
-    conn.execute("SELECT * FROM students")
+    cursor.execute("SELECT * FROM students")
     results = cursor.fetchall()
-    assert len(results) == 3
+    assert len(results) == 4
     assert results[0][1] == "Greg"
     assert results[1][1] == "Michael"
     assert results[2][1] == "Mint"
