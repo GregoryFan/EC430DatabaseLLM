@@ -14,7 +14,7 @@ import pytest
 @pytest.mark.order(1)
 def test_normal_insertioin():
     conn = sqlite3.connect("TESTDB.db")
-    status = csv_reader.load_csv("tests/students.csv", "TESTDB.db")
+    status = csv_reader.load_csv("students.csv", "TESTDB.db")
 
     #Make sure if it returned just fine.
     assert status == 200
