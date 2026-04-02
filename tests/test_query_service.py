@@ -13,7 +13,7 @@ def test_check_result_error():
 
 #Tests the case where nothing is received from the query, potential fault.
 def test_check_result_no_results():
-    query = "test query"
+    query = "SELECT * FROM students WHERE name = 'TEST'"
     error = None
     results1 = []
     results2 = [(None,)]
