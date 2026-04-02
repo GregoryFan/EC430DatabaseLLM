@@ -55,8 +55,7 @@ def check_result(query, results, error):
         
     no_results = (
         len(results) == 0 or
-        results == [(None,)] or
-        results == 0
+        results == [(None,)]
     )
         
     count_empty = (

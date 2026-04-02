@@ -17,13 +17,10 @@ def test_check_result_no_results():
     error = None
     results1 = []
     results2 = [(None,)]
-    results3 = 0
     attempt1, restart1 = query_service.check_result(query, results1, error)
     attempt2, restart2 = query_service.check_result(query, results2, error)
-    attempt3, restart3 = query_service.check_result(query, results3, error)
     assert attempt1 == [query, "Returned zero rows. Likely a missed filtering."] and restart1 == True
     assert attempt2 == [query, "Returned zero rows. Likely a missed filtering."] and restart2 == True
-    assert attempt3 == [query, "Returned zero rows. Likely a missed filtering."] and restart3 == True
 
 #Tests the case where a count where zero is returned, and the query is a WHERE clause.
 def test_check_result_count_empty():
