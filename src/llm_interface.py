@@ -51,7 +51,9 @@ def generate_query(user_input, previous_attempts):
     However, the user is only allowed to look at the database, not modify it, so only versions of a SELECT statement is allowed. The following tables currently in the database is as given,
     along with their corresponding column and column types.
 
+    BEGINNING OF TABLES AND THEIR STRUCTURES:
     {schema_string}
+    END OF TABLES AND THEIR STRUCTURES.
 
     Please respond ONLY with the SQL query that is given, and nothing else. Attempt to use the relevant tables and columns given for a reasonable estimate in the case of typos and synonyms.
     Be very careful, and ONLY use the table names and columns given above. Use judgement: for example, girls could mean female, and type could mean species. 
