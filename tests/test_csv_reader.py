@@ -11,7 +11,6 @@ import pytest
 #Lastly, remember to clean up table afterwards.
 
 #Normal Insertion
-@pytest.mark.order(1)
 def test_normal_insertioin():
     conn = sqlite3.connect("TESTDB.db")
     status = csv_reader.load_csv("students.csv", "TESTDB.db")
@@ -36,7 +35,6 @@ def test_normal_insertioin():
     assert results[2][3] == "Electrical Engineer"
     conn.close()
 
-@pytest.mark.order(2)
 def test_duplicate_key_insertion():
     conn = sqlite3.connect("TESTDB.db")
     status = csv_reader.load_csv("students.csv", "TESTDB.db")
@@ -60,7 +58,6 @@ def test_duplicate_key_insertion():
     assert results[2][3] == "Electrical Engineer"
     conn.close()
 
-@pytest.mark.order(3)
 def test_new_column_insertion():
     conn = sqlite3.connect("TESTDB.db")
     status = csv_reader.load_csv("students2.csv", "TESTDB.db")
@@ -88,7 +85,6 @@ def test_new_column_insertion():
     conn.close()
     
 
-@pytest.mark.order(4)
 def test_new_table_insertion():
     conn = sqlite3.connect("TESTDB.db")
     status = csv_reader.load_csv("food.csv", "TESTDB.db")
@@ -105,7 +101,6 @@ def test_new_table_insertion():
     assert len(results) == 3
     conn.close()
 
-@pytest.mark.order("last")
 def test_cleanup():
     conn = sqlite3.connect("TESTDB.db")
     conn.execute("DROP TABLE students")
