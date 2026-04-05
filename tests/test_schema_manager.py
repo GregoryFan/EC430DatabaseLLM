@@ -17,7 +17,7 @@ def test_setup():
     assert status == 200
 
 def test_get_tables():
-    tables = schema_manager.get_tables()
+    tables = schema_manager.get_tables("TESTDB.db")
     for table in tables:
         if table[0] == "students":
             assert table[1] == ["id", "Name", "Age", "Major"] and table[2] == ["INTEGER", "TEXT", "INTEGER", "TEXT"]
