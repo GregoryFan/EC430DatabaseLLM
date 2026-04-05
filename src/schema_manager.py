@@ -69,15 +69,8 @@ def get_tables(DB_PATH=DB_PATH):
     conn.close()
     return table_schemas
 
-def run_user_query(query, DB_PATH=DB_PATH):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    try:
-        cursor.execute(query)
-        results = cursor.fetchall()
-        conn.commit()
-        return results, None
-    except Exception as e:
-        return None, str(e)
-    finally:
-        conn.close()
+
+#logging function in the case something bad happens.
+def log_query_error(origin, query, error_message):
+    with open("errors_log.txt", "a") as log_file:
+        log_file.write(f"Origin: {origin}\n Query: {query}\nError: {error_message}\n\n")

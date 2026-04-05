@@ -24,6 +24,11 @@ def test_get_tables():
         elif table[0] == "food":
             assert table[1] == ["id", "food", "stock", "price"] and table[2] == ["INTEGER", "TEXT", "INTEGER", "REAL"]
 
+#Tests if file is there and has the error message.
+def test_schema_logger():
+    schema_manager.log_query_error("Test Origin", "Test error message", "This is a test error detail.")
+    assert open("errors_log.txt", "r").read().strip().split("\n")[-1] == "Origin: Test Origin\n Query: Test error message\nError: This is a test error detail."
+
 def test_cleanup():
     conn = sqlite3.connect("TESTDB.db")
     cursor = conn.cursor()

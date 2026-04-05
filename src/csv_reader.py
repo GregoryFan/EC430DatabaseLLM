@@ -34,84 +34,89 @@ def load_csv(file_path, DB_PATH=DB_PATH):
         table_name, new_cols = schema_manager.find_similar_table(data.columns, DB_PATH=DB_PATH)
 
         conn = sqlite3.connect(DB_PATH)
+        try:
+            #Updating Table Logic
+            if table_name != None:
+                #Add new columns, if any
+                if len(new_cols) > 0:
+                    #Get everything together
+                    cols = []
+                    for col in new_cols:
+                        col_type = pandas_to_type(data[col].dtype)
+                        cols.append(f"{col} {col_type}")
+                    col_schema = f"{', '.join(cols)}"
 
-        #Updating Table Logic
-        if table_name != None:
-            #Add new columns, if any
-            if len(new_cols) > 0:
-                #Get everything together
+                    #Make the query
+                    updateQuery = f"""
+                    ALTER TABLE {table_name}
+                    ADD {col_schema}
+                    """
+                    print(updateQuery)
+                    conn.execute(updateQuery)
+                
+                before = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+                #Updating Values
+                placeholders_list = f'{",".join(["?" for _ in data.columns])}'
+                col_names = f'({", ".join([col for col in data.columns])})'
+                query = f"""
+                INSERT INTO {table_name}  {col_names} 
+                VALUES ({placeholders_list})
+                ON CONFLICT({data.columns[0]})
+                DO UPDATE SET {', '.join([f"{col}=excluded.{col}" for col in data.columns])}
+                """
+                conn.executemany(query, clean_data.values.tolist())
+                after = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
+                
+                #To inform users
+                added = after - before
+                updated = len(clean_data) - added
+                print(f"Added {added} new entries. \nUpdated {updated} existing entries.")
+
+                conn.commit()
+                conn.close()
+            
+            #Creating New Table Logic
+            else:
+                #makes col query with name, type.
                 cols = []
-                for col in new_cols:
+                use_as_key = True
+                for col in data.columns:
                     col_type = pandas_to_type(data[col].dtype)
-                    cols.append(f"{col} {col_type}")
+                    if(use_as_key):
+                        cols.append(f"{col} {col_type} UNIQUE")
+                        use_as_key = False
+                    else:
+                        cols.append(f"{col} {col_type}")
                 col_schema = f"{', '.join(cols)}"
 
-                #Make the query
-                updateQuery = f"""
-                ALTER TABLE {table_name}
-                ADD {col_schema}
+                #creates table query with added id autoincrement for tracking.
+                create_query = f"""
+                CREATE TABLE {data_name} (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                {col_schema}
+                )
                 """
-                print(updateQuery)
-                conn.execute(updateQuery)
-            
-            before = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
-            #Updating Values
-            placeholders_list = f'{",".join(["?" for _ in data.columns])}'
-            col_names = f'({", ".join([col for col in data.columns])})'
-            query = f"""
-            INSERT INTO {table_name}  {col_names} 
-            VALUES ({placeholders_list})
-            ON CONFLICT({data.columns[0]})
-            DO UPDATE SET {', '.join([f"{col}=excluded.{col}" for col in data.columns])}
-            """
-            conn.executemany(query, clean_data.values.tolist())
-            after = conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
-            
-            #To inform users
-            added = after - before
-            updated = len(clean_data) - added
-            print(f"Added {added} new entries. \nUpdated {updated} existing entries.")
+                conn.execute(create_query)
 
-            conn.commit()
-            conn.close()
+                #inserting initial values query
+                placeholders_list = f'{", ".join(["?" for _ in data.columns])}'
+                col_names = f'({", ".join([col for col in data.columns])})'
+                insert_query = f"INSERT OR IGNORE INTO {data_name} {col_names} VALUES ({placeholders_list})"
+
+                conn.executemany(insert_query, clean_data.values.tolist())
+
+                conn.commit()
+                conn.close()
+                
+        except Exception as e:
+            schema_manager.log_query_error("CSV Reader", "Error creating or updating table", str(e))
+            return 401
         
-        #Creating New Table Logic
-        else:
-            #makes col query with name, type.
-            cols = []
-            use_as_key = True
-            for col in data.columns:
-                col_type = pandas_to_type(data[col].dtype)
-                if(use_as_key):
-                    cols.append(f"{col} {col_type} UNIQUE")
-                    use_as_key = False
-                else:
-                    cols.append(f"{col} {col_type}")
-            col_schema = f"{', '.join(cols)}"
-
-            #creates table query with added id autoincrement for tracking.
-            create_query = f"""
-            CREATE TABLE {data_name} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            {col_schema}
-            )
-            """
-            conn.execute(create_query)
-
-            #inserting initial values query
-            placeholders_list = f'{", ".join(["?" for _ in data.columns])}'
-            col_names = f'({", ".join([col for col in data.columns])})'
-            insert_query = f"INSERT OR IGNORE INTO {data_name} {col_names} VALUES ({placeholders_list})"
-
-            conn.executemany(insert_query, clean_data.values.tolist())
-
-            conn.commit()
-            conn.close()
-    
         return 200
     
     except Exception as e:
         print(f"Error reading CSV file: {e}")
+        schema_manager.log_query_error("CSV Reader", "Error reading CSV file", str(e))
         return 400
     
 #Gets data type from pandas
