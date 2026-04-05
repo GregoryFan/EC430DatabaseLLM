@@ -50,7 +50,7 @@ def test_lower_query():
 
 #Joins 
 def test_join_query():
-    query = "SELECT students.Name, food.food FROM students JOIN courses ON students.id = food.id"
+    query = "SELECT students.Name, food.food FROM students JOIN food ON students.id = food.id"
     assert sql_verifier.validate_query(query, "TESTDB.db")
 
 #Counts

@@ -13,7 +13,8 @@ def load_csv(file_path, DB_PATH=DB_PATH):
     try:
         data = pd.read_csv(file_path)
 
-        data_name = file_path[:-4]
+        #Sets the table name to be the data file name.
+        data_name = file_path[:-4].split("/")[-1] 
 
         
         #For goodness of data, drop all columns with the same first column.
