@@ -61,7 +61,7 @@ def test_count_query():
 #Sums
 def test_sum_query():
     query = "SELECT SUM(Age) FROM students"
-    assert sql_verifier.validate_query(query)
+    assert sql_verifier.validate_query(query, "TESTDB.db")
 
 #cleanup
 def test_cleanup():
