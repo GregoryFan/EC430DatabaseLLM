@@ -1,5 +1,7 @@
 # Queryable Database 
-## Built for EC530 Software Engineering Principles
+#### Built for EC530 Software Engineering Principles
+
+### Overview
 
 This is a framework for a queryable database once data is inserted inside.
 The project uses the OpenAI LLM and an appropriate environment key must be placed to use.
