@@ -7,12 +7,13 @@ from dotenv import load_dotenv
 # ── Load config ───────────────────────────────────────────────────────────────
 load_dotenv()
 DEBUG = os.getenv("DEBUG", "false").strip().lower() == "true"
+DB_PATH = os.getenv("DB_PATH", "database.db").strip().lower()
 
 def _debug(msg):
     if DEBUG:
         print(f"DEBUG {msg}")
 
-def validate_query(query):
+def validate_query(query, DB_PATH=DB_PATH):
     # ── 1. Basic safety checks ────────────────────────────────────────────────
     if not query.strip().upper().startswith("SELECT"):
         _debug("Query validation failed: Query must start with SELECT.")
@@ -25,7 +26,7 @@ def validate_query(query):
         return False
 
     # ── 2. Build schema lookup from get_tables() ──────────────────────────────
-    raw_schemas = schema_manager.get_tables()
+    raw_schemas = schema_manager.get_tables(DB_PATH)
     schema = {}
     for table_name, col_names, col_dtypes in raw_schemas:
         schema[table_name.lower()] = {
