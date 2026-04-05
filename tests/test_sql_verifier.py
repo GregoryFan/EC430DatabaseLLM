@@ -50,7 +50,7 @@ def test_lower_query():
 
 #Joins 
 def test_join_query():
-    query = "SELECT students.name, courses.course_name FROM students JOIN courses ON students.course_id = courses.id"
+    query = "SELECT students.Name, food.food FROM students JOIN courses ON students.id = food.id"
     assert sql_verifier.validate_query(query, "TESTDB.db")
 
 #Counts
@@ -60,7 +60,7 @@ def test_count_query():
 
 #Sums
 def test_sum_query():
-    query = "SELECT SUM(gpa) FROM students"
+    query = "SELECT SUM(Age) FROM students"
     assert sql_verifier.validate_query(query)
 
 #cleanup
