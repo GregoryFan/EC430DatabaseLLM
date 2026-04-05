@@ -12,7 +12,7 @@ def test_setup():
     assert status == 200
     status = csv_reader.load_csv("food.csv", "TESTDB.db")
     assert status == 200
-    
+
 #Not a query
 def test_bad_query():
     query = "not a query"
@@ -62,6 +62,15 @@ def test_count_query():
 def test_sum_query():
     query = "SELECT SUM(gpa) FROM students"
     assert sql_verifier.validate_query(query)
+
+#cleanup
+def test_cleanup():
+    conn = sqlite3.connect("TESTDB.db")
+    cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS students;")
+    cursor.execute("DROP TABLE IF EXISTS food;")
+    conn.commit()
+    conn.close()
 
 
 
