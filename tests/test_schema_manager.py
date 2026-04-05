@@ -1,5 +1,6 @@
 import schema_manager
 import csv_reader
+import sqlite3
 
 
 #Load in the data and test the following:
@@ -10,9 +11,9 @@ import csv_reader
 #when it reads a csv, so we can just test get_tables only instead.
 
 def test_setup():
-    status = csv_reader.read_csv("students.csv")
+    status = csv_reader.load_csv("students.csv", "TESTDB.db")
     assert status == 200
-    status = csv_reader.read_csv("food.csv")
+    status = csv_reader.load_csv("food.csv", "TESTDB.db")
     assert status == 200
 
 def test_get_tables():
@@ -22,4 +23,12 @@ def test_get_tables():
             assert table[1] == ["id", "Name", "Age", "Major"] and table[2] == ["INTEGER", "TEXT", "INTEGER", "TEXT"]
         elif table[0] == "food":
             assert table[1] == ["id", "food", "stock", "price"] and table[2] == ["INTEGER", "TEXT", "INTEGER", "REAL"]
+
+def test_cleanup():
+    conn = sqlite3.connect("TESTDB.db")
+    cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS students;")
+    cursor.execute("DROP TABLE IF EXISTS food;")
+    conn.commit()
+    conn.close()
 
