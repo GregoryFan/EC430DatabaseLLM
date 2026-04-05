@@ -73,4 +73,4 @@ def get_tables(DB_PATH=DB_PATH):
 #logging function in the case something bad happens.
 def log_query_error(origin, query, error_message):
     with open("errors_log.txt", "a") as log_file:
-        log_file.write(f"Origin: {origin}\n Query: {query}\nError: {error_message}\n\n")
+        log_file.write(f"Origin: {origin}\nQuery: {query}\nError: {error_message}\n\n")

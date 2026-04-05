@@ -27,7 +27,9 @@ def test_get_tables():
 #Tests if file is there and has the error message.
 def test_schema_logger():
     schema_manager.log_query_error("Test Origin", "Test error message", "This is a test error detail.")
-    assert open("errors_log.txt", "r").read().strip().split("\n")[-1] == "Origin: Test Origin\n Query: Test error message\nError: This is a test error detail."
+    assert open("errors_log.txt", "r").read().strip().split("\n")[-1] == "Error: This is a test error detail."
+    assert open("errors_log.txt", "r").read().strip().split("\n")[-2] == "Query: Test error message"
+    assert open("errors_log.txt", "r").read().strip().split("\n")[-3] == "Origin: Test Origin"
 
 def test_cleanup():
     conn = sqlite3.connect("TESTDB.db")
