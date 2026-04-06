@@ -8,9 +8,13 @@ The project uses the OpenAI LLM and an appropriate environment key must be place
 
 The additional csv files inside the project are used as examples and used for unit testing.
 
-To run the project, run main.py
+### Running the Project/Tests
 
-### Design
+To run the project, simply run the `main.py` file.
+
+This project uses pytest for tests. Run pytest on the root file to run tests.
+
+### System Design
 The design of the system is as follows:
 
 CSV Reader - Reads a file path and attempts to create a new table or update an existing one if enough headers are similar.
@@ -19,6 +23,6 @@ Schema Manager - Provides either similar tables for the csv reader, or the table
 
 Query Service - Used as an intermediary between user input and the rest of the system, such as providing the natural language instructions to the LLM, and verifying it.
 
-LLM Interface - Generates the prompt and uses the OpenAI API to respond with a SQL query that best matches the user input.
+LLM Interface - Generates the prompt and uses the OpenAI API to respond with a SQL query that best matches the user input. The resulting SQL response is also fed back into the LLM to have it present the data in a more user friendly way.
 
 SQL Verifier - A safety measure ensuring that what the LLM provides is accurate and not malicious.
